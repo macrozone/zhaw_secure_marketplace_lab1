@@ -64,6 +64,8 @@ public class LoginServlet extends HttpServlet {
     			
     			// Logged in, forward to servlet
     	        url = "/admin/listpurchases";
+    		} else if (request.isUserInRole("productmanager")) {
+    			url = "/admin/manageproducts";
     		} else {
     			
     			// Not logged in, forward to login form
@@ -93,7 +95,12 @@ public class LoginServlet extends HttpServlet {
             	HttpSession session = request.getSession();
             	session.setAttribute("csrftoken", csrfToken);
             	
-    	        url = "/admin/listpurchases";
+            	if (request.isUserInRole("productmanager")) {
+        			url = "/admin/manageproducts";
+        		} else {
+        			url = "/admin/listpurchases";
+        		}
+            	
      		} catch (Exception e) {
      			request.setAttribute("message", "Login failed.");
      			url = "/index.jsp";

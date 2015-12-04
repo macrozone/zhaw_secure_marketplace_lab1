@@ -15,10 +15,8 @@ import javax.servlet.http.*;
 @ServletSecurity(
 		value = @HttpConstraint(value = EmptyRoleSemantic.DENY),
 		httpMethodConstraints = {@HttpMethodConstraint(value = "GET", 
-						         rolesAllowed = {"marketing", "sales"},
 						         transportGuarantee = TransportGuarantee.CONFIDENTIAL),
 						         @HttpMethodConstraint(value = "POST",
-						         rolesAllowed = {"marketing", "sales"}, 
 						         transportGuarantee = TransportGuarantee.CONFIDENTIAL)})
 public class LogoutServlet extends HttpServlet {
 

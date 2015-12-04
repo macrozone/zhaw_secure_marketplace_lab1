@@ -17,6 +17,14 @@ import beans.Product;
 import data.*;
 
 @WebServlet("/admin/manageproducts")
+@ServletSecurity(
+		value = @HttpConstraint(value = EmptyRoleSemantic.DENY),
+		httpMethodConstraints = {@HttpMethodConstraint(value = "GET", 
+						         rolesAllowed = {"productmanager"},
+						         transportGuarantee = TransportGuarantee.CONFIDENTIAL),
+						         @HttpMethodConstraint(value = "POST",
+						         rolesAllowed = {"productmanager"}, 
+						         transportGuarantee = TransportGuarantee.CONFIDENTIAL)})
 public class ManageProductsServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
