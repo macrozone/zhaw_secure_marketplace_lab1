@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/marketplace">
+
+  <Resource name="jdbc/marketplace" auth="Container" 
+        maxActive="100" maxIdle="30" maxWait="10000" 
+        username="marketplace" password="marketplace" 
+        driverClassName="com.mysql.jdbc.Driver" 
+        url="jdbc:mysql://localhost:3306/marketplace?autoReconnect=true" 
+        logAbandoned="true" removeAbandoned="true" 
+        removeAbandonedTimeout="60" type="javax.sql.DataSource" />
+
+  <Realm className="org.apache.catalina.realm.JDBCRealm"
+        driverName="com.mysql.jdbc.Driver"
+        connectionURL="jdbc:mysql://localhost:3306/marketplace"
+        connectionName="marketplace" connectionPassword="marketplace"
+        userTable="UserPass" userNameCol="Username" userCredCol="Digest2"
+        userRoleTable="UserRole" roleNameCol="Rolename" />        
+
+</Context>
