@@ -27,10 +27,13 @@
   
   	  <c:forEach var="item" items="${products}">
   		<tr valign="top">
-    	  <td>${item.code}</td>
-    	  <td>${item.description}</td>
-    	  <td>${item.priceCurrencyFormat}</td>
-          <td><a href="<c:url value='/admin/deleteproduct?productCode=${item.code}' />">Delete</a></td>
+    	  <td><c:out value="${item.code}" /></td>
+    	  <td><c:out value="${item.description}" /></td>
+    	  <td><c:out value="${item.priceCurrencyFormat}" /></td>
+    	  <c:url value="/admin/deleteproduct" var="deleteUrl">
+  			 <c:param name="productCode" value="${item.code}" />
+		  </c:url>
+          <td><a href='<c:out value="${deleteUrl}" />'>Delete</a></td>
         </tr>
       </c:forEach>
     </table>
