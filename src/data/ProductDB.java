@@ -50,7 +50,7 @@ public class ProductDB {
 					product.setDescription(rs.getString("ProductDescription"));
 					product.setPrice(rs.getDouble("ProductPrice"));
 				}
-			} 
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
@@ -61,15 +61,42 @@ public class ProductDB {
 	}
 
 	public static int deleteProduct(String productCode) {
+		ConnectionPool pool = ConnectionPool.getInstance();
+		Connection connection = pool.getConnection();
 
-		// Implement...
-		return 0;
+		// Create the query string using ? to identify parameters
+		String query = "DELETE FROM Product WHERE ProductCode LIKE ?";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setString(1, productCode);
+			ps.executeUpdate();
+			return 1;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		} finally {
+			pool.freeConnection(connection);
+		}
 	}
 
 	public static int insertProduct(Product product) {
+		ConnectionPool pool = ConnectionPool.getInstance();
+		Connection connection = pool.getConnection();
 
-		// Implement...
-		return 0;
+		// Create the query string using ? to identify parameters
+		String query = "INSERT INTO Product (ProductCode, ProductDescription, ProductPrice) VALUES (?,?,?)";
+		try (PreparedStatement ps = connection.prepareStatement(query)) {
+			ps.setString(1, product.getCode());
+			ps.setString(2, product.getDescription());
+			ps.setDouble(3, product.getPrice());
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0;
+		} finally {
+			pool.freeConnection(connection);
+		}
+
+		return 1;
 	}
 
 }
