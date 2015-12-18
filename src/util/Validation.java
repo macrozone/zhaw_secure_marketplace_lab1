@@ -7,7 +7,6 @@ import org.owasp.esapi.Validator;
 public class Validation {
 
 	public static String validatePersonName(String input) {
-
 		Validator validator = ESAPI.validator();
 		try {
 			String clean = validator.getValidInput("Name", input.trim(), "PersonName", 32, false);
@@ -41,19 +40,32 @@ public class Validation {
 	
 	public static String validateProductCode(String input) {
 
-		// Implement...
-    	return null;
+		Validator validator = ESAPI.validator();
+		try {
+			String clean = validator.getValidInput("ProductCode", input.trim(), "ProductCode", 4, false);
+			return clean;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static String validateProductDescription(String input) {
-
-		// Implement...
-    	return null;
+		Validator validator = ESAPI.validator();
+		try {
+			String clean = validator.getValidInput("ProductDescription", input.trim(), "ProductDescription", 4, false);
+			return clean;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 	public static String validateProductPrice(String input) {
-
-		// Implement...
-    	return null;
+		Validator validator = ESAPI.validator();
+		try {
+			String clean = validator.getValidInput("ProductPrice", input.trim(), "ProductPrice", 4, false);
+			return clean;
+		} catch (Exception e) {
+			return null;
+		}
 	}
 }
