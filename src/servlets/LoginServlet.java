@@ -97,8 +97,10 @@ public class LoginServlet extends HttpServlet {
             	
             	if (request.isUserInRole("productmanager")) {
         			url = "/admin/manageproducts";
-        		} else {
+        		} else if (request.isUserInRole("marketing") || request.isUserInRole("sales") {
         			url = "/admin/listpurchases";
+        		} else {
+        			request.logout();
         		}
             	
      		} catch (Exception e) {
