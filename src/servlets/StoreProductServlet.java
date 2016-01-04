@@ -8,10 +8,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.owasp.esapi.ValidationErrorList;
 import org.owasp.esapi.errors.ValidationException;
 
+import util.CSRF;
 import util.Validation;
 import beans.Product;
 import data.ProductDB;
@@ -34,7 +36,7 @@ public class StoreProductServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		String message;
-		String url;
+		String url = "";
 
 		// Get parameters from the request
 		String productCode = request.getParameter("productCode");
@@ -43,34 +45,43 @@ public class StoreProductServlet extends HttpServlet {
 
 		// Validate the received data, implement...
 		// Validate the received data
-		ValidationErrorList errors = new ValidationErrorList();
-		if ((productCode = Validation.validateProductCode(productCode)) == null) {
-			message = "Please insert a valid product code";
-			url = "/admin/addproduct";
-		} else if ((description = Validation
-				.validateProductDescription(description)) == null) {
-			message = "Please insert a valid product description";
-			url = "/admin/addproduct";
-		} else if ((price = Validation.validateProductPrice(price)) == null) {
-			message = "Please insert a valid price";
-			url = "/admin/addproduct";
-			for (Object vo : errors.errors()) {
-				log("Error (validateCCNumber): "
-						+ ((ValidationException) vo).getMessage());
-			}
+		String tokenReceived = request.getParameter("csrftoken");
+		HttpSession session = request.getSession();
+		String tokenExpected = (String) session.getAttribute("csrftoken");
+		if (tokenReceived == null
+				|| !CSRF.validateToken(tokenReceived, tokenExpected)) {
+			message = "Token mismatch, expected: " + tokenExpected
+					+ ", received: " + tokenReceived;
 		} else {
-			// Store product in DB
-			Product product = new Product();
-			product.setCode(productCode);
-			product.setDescription(description);
-			product.setPrice(Double.parseDouble(price));
-			if (ProductDB.insertProduct(product) < 1) {
-				message = "A problem occurred, please try again later.";
+			ValidationErrorList errors = new ValidationErrorList();
+			if ((productCode = Validation.validateProductCode(productCode)) == null) {
+				message = "Please insert a valid product code";
+				url = "/admin/addproduct";
+			} else if ((description = Validation
+					.validateProductDescription(description)) == null) {
+				message = "Please insert a valid product description";
+				url = "/admin/addproduct";
+			} else if ((price = Validation.validateProductPrice(price)) == null) {
+				message = "Please insert a valid price";
+				url = "/admin/addproduct";
+				for (Object vo : errors.errors()) {
+					log("Error (validateCCNumber): "
+							+ ((ValidationException) vo).getMessage());
+				}
 			} else {
-				message = "The product has been added.";
-			}
-			url = "/admin/manageproducts";
+				// Store product in DB
+				Product product = new Product();
+				product.setCode(productCode);
+				product.setDescription(description);
+				product.setPrice(Double.parseDouble(price));
+				if (ProductDB.insertProduct(product) < 1) {
+					message = "A problem occurred, please try again later.";
+				} else {
+					message = "The product has been added.";
+				}
+				url = "/admin/manageproducts";
 
+			}
 		}
 		request.setAttribute("message", message);
 		RequestDispatcher dispatcher = getServletContext()
